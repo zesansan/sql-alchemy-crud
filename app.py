@@ -16,6 +16,7 @@ class Student(db.Model):
 	student_id = db.Column(db.Integer, primary_key =True)
 	first_name = db.Column(db.Text)
 	last_name = db.Column(db.Text)
+	excuses = db.relationship('Excuse', backref = 'student', lazy = 'dynamic', cascade = 'all,delete')
 
 	#instantiate class information in rows
 	def __init__(self, first_name, last_name):
@@ -25,6 +26,21 @@ class Student(db.Model):
 	#making things readable	
 	def __repr__(self):
 		return "The student's name is {} {}.".format(self.first_name, self.last_name)
+
+class Excuse(db.Model):
+
+	__tablename__="excuses"		
+
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.Text)
+	is_believable = (db.Boolean)
+	student_id = db.Column(db.Integer, db.ForeignKey('students.student_id'))
+
+	def __init__(self, name, is_believable, student_id):
+		self.name = name
+		self.is_believable = is_believable
+		self.student_id = student_id
+
 #route			
 @app.route('/')
 def root():
