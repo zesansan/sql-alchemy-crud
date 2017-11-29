@@ -13,7 +13,7 @@ class Student(db.Model):
 	__tablename__="students"
 
 	#columns, DDLs
-	id = db.Column(db.Integer, primary_key =True)
+	student_id = db.Column(db.Integer, primary_key =True)
 	first_name = db.Column(db.Text)
 	last_name = db.Column(db.Text)
 
@@ -46,27 +46,26 @@ def index():
 def new():
 	return render_template('new.html')
 
-@app.route('/student/<int:id>', methods=['GET', 'DELETE', 'PATCH'])
-def show(id):
-	found_student = Student.query.get_or_404(id)
+@app.route('/student/<int:student_id>', methods=['GET', 'DELETE', 'PATCH'])
+def show(student_id):
+	found_student = Student.query.get_or_404(student_id)
 	if request.method == b'PATCH':
 		found_student.first_name = request.form['first_name']
 		found_student.last_name = request.form['last_name']
 		db.session.add(found_student)
 		db.session.commit()
-
+		return redirect(url_for('index'))
 	if request.method == b'DELETE':
 		db.session.delete(found_student)
 		db.session.commit()
+		return redirect(url_for('index'))
+	
+	return render_template('show.html', student = found_student)
 
-	if found_student and request.method == 'GET':
-		return render_template('show.html', student = found_student)
-
-	return render_template('show.html')
-
-@app.route('/student/<int:id>/edit')
-def edit(id):
-	found_student = Student.query.get_or_404(id)
+	
+@app.route('/student/<int:student_id>/edit')
+def edit(student_id):
+	found_student = Student.query.get_or_404(student_id)
 	return render_template('edit.html', student = found_student)
 
 if __name__ == '__main__':
