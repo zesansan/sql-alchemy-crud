@@ -56,7 +56,7 @@ def index():
 		db.session.add(new_student)
 		db.session.commit()
 		return redirect(url_for('index'))
-	return render_template('index.html', students=Student.query.all())
+	return render_template('students/index.html', students=Student.query.all())
 
 @app.route('/student/new')
 def new():
@@ -76,13 +76,49 @@ def show(student_id):
 		db.session.commit()
 		return redirect(url_for('index'))
 	
-	return render_template('show.html', student = found_student)
+	return render_template('students/show.html', student = found_student)
 
-	
 @app.route('/student/<int:student_id>/edit')
 def edit(student_id):
 	found_student = Student.query.get_or_404(student_id)
-	return render_template('edit.html', student = found_student)
+	return render_template('students/edit.html', student = found_student)
+
+# excueses route
+@app.route('/student/<int:student_id>/excuses/', methods=['GET', 'POST'])
+def excuses_index(student_id):
+	#if we make a post request
+	if request.method == 'POST':
+		# create an instance 
+		new_excuse = Excuse(request.form['name'], student_id)
+		db.session.add(new_excuse)
+		db.session.commit()
+		return redirect(url_for('excuses_index', student_id=student_id))
+	student = Student.query.get(student_id)
+	return render_template('excuses/index.html', student = student)
+
+@app.route('/student/<int:student_id>/excuses/new')
+def excuses_new(student_id):
+	student = Student.query.get(student_id)
+	return render_template('excuses/new.html', student = student)
+
+@app.route('/student/<int:student_id>/excuses/<int:id>', methods= ['PATCH', 'DELETE', 'GET', 'POST'])		
+def excuses_show(student_id, id):
+	excuse = Excuse.query.get(id)
+	if request.method == b"PATCH":
+		excuse.test = request.form['name']
+		db.session.add(excuse)
+		db.session.commit()
+		return redirect(url_for('index'))
+	if request.method == b"DELETE": 
+		db.session.delete(excuse)
+		db.session.commit()	
+		return redirect(url_for('index'), student_id=student_id)
+	return render_template('excuses/show.html', excuse = excuse)	
+
+@app.route('/student/<int:student_id>/excuses/<int:id>/edit')
+def excuses_edit(student_id, id):
+	excuse = Excuse.query.get(id)
+	return render_template('excuses/edit.html', excuse=excuse)
 
 if __name__ == '__main__':
 	app.run(debug=True)	

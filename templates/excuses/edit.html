@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ excuse.student.first_name }} - edoit your excuse</h1>
+<form action="{{ url_for('excuses_show', student_id=excuse.student_id, id=excuse.id) }}?_method=PATCH">
+	<input type="text" name="name" value="{{excuse.text}}">
+	<input type="submit" value="edit your excuse">
+</form>
+{% endblock %}

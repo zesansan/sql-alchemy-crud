@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ student.first_name }} - what's your excuse? </h1>
+<form action="{{url_for('excuses_index', student_id=student.student_id }}">
+	<input type="text" name="name">
+	<input type="submit" value="add an excuse!">
+</form>
+{% endblock %}
