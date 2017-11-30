@@ -77,14 +77,14 @@ def excuses_index(student_id):
 		new_excuse = Excuse(request.form['text'], student_id)
 		db.session.add(new_excuse)
 		db.session.commit()
-		return redirect(url_for('excuses_index'), student_id = student_id)
-	found_student = Student.query.get(student_id)
+		return redirect(url_for('excuses_index', student_id= student_id))
+	found_student = Student.query.get(student_id)	
 	return render_template('excuses/index.html', student=found_student)
 
 @app.route('/students/<int:student_id>/excuses/new')
 def excuses_new(student_id):
-	found_student = Student.query.get(student_id)
-	return render_template('excuses/new.html', student=found_student)
+	student = Student.query.get(student_id)
+	return render_template('excuses/new.html', student=student)
 
 
 @app.route('/students/<int:student_id>/excuses/<int:id>/edit')	
@@ -95,17 +95,16 @@ def excuses_edit(student_id, id):
 @app.route('/students/<int:student_id>/excuses/<int:id>', methods = ['GET', 'PATCH', 'DELETE'])
 def excuses_show(student_id, id):
 	found_excuse = Excuse.query.get(id)
-	found_student = Student.query.get(student_id)
 	if request.method == b'PATCH':
 		found_excuse.text = request.form['text']
 		db.session.add(found_excuse)
 		db.session.commit()
-		return redirect(url_for('excuses_index'), student_id = found_student.id)	
+		return redirect(url_for('excuses_index', student_id = student_id))	
 
 	if request.method == b'DELETE':	
 		db.session.delete(found_excuse)
 		db.session.commit()
-		return redirect(url_for('excuses_index'), student_id = found_student.id)
+		return redirect(url_for('excuses_index', student_id = student_id))
 	return render_template('excuses/show.html', excuse = found_excuse )	
 		
 if __name__ == '__main__':
