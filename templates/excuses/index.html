@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>See all excuses for {{ student.first_name }}</h1>
+<a href="{{ url_for('excuses_new', student_id=student.id) }}">make a new excuse</a>
+
+{% for excuse in student.excuses %}
+<p>
+	{{ excuse.text }}
+	<a href="{{ url_for('excuses_edit', student_id=student.id, id=excuse.id) }}">edit this excuse</a>
+	<form action="{{ url_for('excuses_show', student_id=student.id, id=excuse.id) }}?_method=DELETE" method="POST">
+		<input type="submit" value="DELETE">
+	</form>
+</p>
+{% endfor %}
+
+
+{% endblock %}

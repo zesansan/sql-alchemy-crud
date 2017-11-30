@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{{ url_for('show', id=student.id) }}?_method=PATCH" method="POST" >
+	<input type="text" name="first_name" value="{{ student.first_name }}">
+	<input type="text" name="last_name" value="{{ student.last_name }}">
+	<input type="submit" value="update">
+</form>
+<form action="{{ url_for('show', id=student.id) }}?_method=DELETE" method="POST" >
+	<input type="submit" value="DELETE">
+</form>
+{% endblock %}
